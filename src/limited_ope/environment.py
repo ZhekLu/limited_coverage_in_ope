@@ -40,8 +40,8 @@ class FrozenLakeModel:
             max_episode_steps=config.horizon,
         )
         env = cast(FrozenLakeEnv, wrapped.unwrapped)
-        self.n_states = int(cast(gym.spaces.Discrete, env.observation_space).n)
-        self.n_actions = int(cast(gym.spaces.Discrete, env.action_space).n)
+        self.n_states = int(cast(gym.spaces.Discrete[np.int64], env.observation_space).n)
+        self.n_actions = int(cast(gym.spaces.Discrete[np.int64], env.action_space).n)
         self.initial: FloatArray = np.asarray(env.initial_state_distrib, dtype=np.float64)
         self.tiles = [row.decode() for row in env.desc.reshape(-1)]
         self.terminal: BoolArray = np.isin(self.tiles, ["H", "G"])

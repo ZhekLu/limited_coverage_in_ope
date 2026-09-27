@@ -40,6 +40,12 @@ class LoggedDataset:
                 array = value.copy()
                 array.setflags(write=False)
                 object.__setattr__(self, item.name, array)
+        for name in ("offsets", "states", "actions", "next_states", "times"):
+            if getattr(self, name).dtype.kind not in "iu":
+                raise ValueError(f"{name} must contain integer indices")
+        for name in ("terminated", "truncated"):
+            if getattr(self, name).dtype.kind != "b":
+                raise ValueError(f"{name} must contain boolean flags")
         if self.horizon < 1 or self.n_states < 1 or self.n_actions < 1:
             raise ValueError("Dataset dimensions must be positive")
         if self.offsets.ndim != 1 or len(self.offsets) < 2:

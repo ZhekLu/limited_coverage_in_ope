@@ -167,4 +167,5 @@ cython_debug/
 .idea/
 .ruff_cache/
 results/*/
+results/.*.lock
 !results/.gitkeep

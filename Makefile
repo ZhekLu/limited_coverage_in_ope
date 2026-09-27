@@ -1,8 +1,9 @@
-UV ?= uv
+UV ?= $(if $(wildcard .venv/bin/uv),.venv/bin/uv,uv)
+export UV_CACHE_DIR ?= $(CURDIR)/.cache/uv
 CONFIG ?= configs/study.json
 RUN ?= results/study
 
-.PHONY: help setup lock format lint typecheck test check smoke benchmark study support run resume plots report reproduce
+.PHONY: help setup lock format lint typecheck test check smoke benchmark study support run resume plots report build reproduce
 
 help: ## Display available workflows
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "%-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -55,5 +56,8 @@ plots: ## Rebuild figures independently from saved RUN
 
 report: ## Rebuild tables and research report from saved RUN
 	$(UV) run --locked limited-ope summarize --run $(RUN)
+
+build: ## Build wheel and source archive
+	$(UV) build
 
 reproduce: check study ## Validate code and reproduce the complete study
