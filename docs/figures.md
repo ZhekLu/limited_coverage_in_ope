@@ -18,6 +18,9 @@ policy's safety guarantee. All exact numeric values remain in CSV tables.
 | `supplement_paired_comparisons` | Paired MSE difference versus IS across mismatch; method lines, N panels | Descriptive paired bootstrap; no confirmatory testing or correction for multiple comparisons |
 
 Figure D uses a symmetric-log x-axis to include exactly zero training losses.
+Figure A uses a symmetric-log y-axis, linear below RMSE=0.05, so rare extreme
+IS errors and their entire uncertainty bands remain visible alongside small FQE
+errors. Shared axis limits are calculated after all panels contribute data bounds.
 PDIS shares the IS line in Figure A and is described in captions because every
 nonzero reward occurs on the final transition. It remains a separate implemented,
 tested and saved estimator. If the study changes rewards, that plotting convention

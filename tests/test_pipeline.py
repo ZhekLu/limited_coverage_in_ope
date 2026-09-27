@@ -3,6 +3,7 @@
 import json
 from dataclasses import replace
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pytest
@@ -91,3 +92,42 @@ def test_support_only_pipeline(tmp_path):
     run_dir = CoverageExperiment(config).run()
     figures = StudyPlotter(run_dir).render()
     assert [p.stem for p in figures.glob("*.png")] == ["supplement_support_violation"]
+
+
+def test_shared_rmse_axis_preserves_extreme_later_panel_and_ci(completed_run, monkeypatch):
+    _, run_dir = completed_run
+    plotter = StudyPlotter(run_dir)
+    # The later panel has an extreme tail. Fixing limits after the first panel
+    # previously hid this value and its interval despite retaining the raw data.
+    plotter.summary = pd.DataFrame(
+        [
+            {
+                "scope": "main",
+                "n": 12,
+                "mixing": 1.0,
+                "method": "IS",
+                "rmse": 0.01,
+                "rmse_ci_low": 0.005,
+                "rmse_ci_high": 0.02,
+            },
+            {
+                "scope": "main",
+                "n": 24,
+                "mixing": 0.0,
+                "method": "IS",
+                "rmse": 50.0,
+                "rmse_ci_low": 10.0,
+                "rmse_ci_high": 100.0,
+            },
+        ]
+    )
+    limits = []
+
+    def capture(figure, name, caption):
+        limits.extend(axis.get_ylim() for axis in figure.axes)
+        plt.close(figure)
+
+    monkeypatch.setattr(plotter, "_save", capture)
+    plotter._rmse()
+    assert len(limits) == 2
+    assert all(low <= 0 and high >= 100 for low, high in limits)

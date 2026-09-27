@@ -275,6 +275,7 @@ class ResultsAnalyzer:
             "| N | ESS/N at lambda=1 | ESS/N at lambda=0 | IS SD at lambda=1 | IS SD at lambda=0 |",
             "|---:|---:|---:|---:|---:|",
         ]
+        mechanism_notes: list[str] = []
         for n in self.config.episode_counts:
             d = diagnostics[(diagnostics.scope == "main") & (diagnostics.n == n)]
             s = summary[(summary.scope == "main") & (summary.n == n) & (summary.method == "IS")]
@@ -286,6 +287,18 @@ class ResultsAnalyzer:
                     f"{lookup_d.loc[0, 'ess_fraction']:.4g} | {lookup_s.loc[1, 'sd']:.4g} | "
                     f"{lookup_s.loc[0, 'sd']:.4g} |"
                 )
+                if float(str(lookup_s.loc[0, "sd"])) < float(str(lookup_s.loc[1, "sd"])):
+                    mechanism_notes += [
+                        "",
+                        f"At N={n}, uniform behavior has lower *observed* IS SD than on-policy "
+                        "behavior. The preregistered monotone variance prediction is not "
+                        "observed at these endpoints. A plausible explanation is that finite "
+                        "repetitions miss rare influential target trajectories; this does not "
+                        "establish that the population IS variance is lower. Inspect bias, "
+                        "mean weight and ESS together with SD.",
+                        "",
+                    ]
+        lines += mechanism_notes
         main = estimates[estimates.scope == "main"]
         if len(main) and {"IS", "PDIS"}.issubset(set(main.method)):
             pivot = main.pivot(

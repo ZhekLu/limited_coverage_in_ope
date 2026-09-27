@@ -112,14 +112,19 @@ class StudyPlotter:
                 )
                 self._line(axis, values, "rmse", label, COLORS[method], MARKERS[method])
             self._finish_axis(axis, "RMSE of policy value", f"N = {n:,}")
-            axis.set_ylim(bottom=0)
+        # Defer shared limits until every panel has contributed its data bounds.
+        axes[0, 0].set_yscale("symlog", linthresh=0.05)
+        axes[0, 0].autoscale(enable=True, axis="y")
+        axes[0, 0].set_ylim(bottom=0)
         axes[0, -1].legend(fontsize=8)
         self._save(
             figure,
             "figure_a_rmse_vs_mismatch",
             "Main result. Each line summarizes error against exact finite-horizon truth. "
             "Shaded bands show Monte Carlo uncertainty of RMSE across independent datasets. "
-            "Panels vary N; mismatch increases left to right. IS and PDIS coincide on this "
+            "Panels vary N; mismatch increases left to right. A symmetric-log y-axis "
+            "(linear below 0.05) preserves both small errors and extreme IS tails; "
+            "all uncertainty bands are visible without clipping. IS and PDIS coincide on this "
             "terminal-reward task and share one line. Lower RMSE in this study does not "
             "establish universal estimator superiority. No estimates are clipped or removed.",
         )
@@ -222,7 +227,8 @@ class StudyPlotter:
             )
             axis.set_xscale("symlog", linthresh=1e-5)
             axis.grid(alpha=0.22)
-            axis.set_ylim(bottom=0)
+        axes[0, 0].autoscale(enable=True, axis="y")
+        axes[0, 0].set_ylim(bottom=0)
         if points is not None:
             figure.colorbar(
                 points, ax=list(axes.flat), label="Policy mismatch (1 − λ)", shrink=0.85
