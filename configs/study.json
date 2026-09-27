@@ -1,0 +1,14 @@
+{
+  "name": "study",
+  "episode_counts": [100, 500, 2000],
+  "lambdas": [1.0, 0.75, 0.5, 0.25, 0.0],
+  "repetitions": 50,
+  "master_seed": 20260927,
+  "output_dir": "results",
+  "save_datasets": true,
+  "support_stress": true,
+  "environment": {"horizon": 100, "gamma": 1.0, "is_slippery": true, "map_name": "4x4"},
+  "policy": {"epsilon": 0.05},
+  "estimators": {"methods": ["IS", "WIS", "PDIS", "FQE", "DR"], "folds": 2, "unseen_value": 0.0},
+  "plots": {"bootstrap_samples": 2000, "confidence": 0.95, "representative_n": 500, "dpi": 180}
+}

@@ -1,0 +1,5 @@
+{
+  "name": "benchmark", "episode_counts": [100, 500, 2000], "lambdas": [1.0, 0.0],
+  "repetitions": 3, "master_seed": 20260927, "support_stress": false,
+  "save_datasets": true, "plots": {"bootstrap_samples": 200}
+}

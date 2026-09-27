@@ -1,0 +1,5 @@
+{
+  "name": "support", "episode_counts": [100, 500, 2000], "lambdas": [1.0],
+  "repetitions": 50, "master_seed": 20260927, "main_sweep": false,
+  "support_stress": true, "save_datasets": true
+}

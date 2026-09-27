@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "limited-coverage-ope"
+version = "0.1.0"
+description = "Controlled finite-horizon off-policy evaluation under limited coverage"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+authors = [{ name = "Eugene" }]
+dependencies = [
+  "gymnasium>=1.2,<1.4",
+  "numpy>=2.2,<3",
+  "pandas>=2.2,<3",
+  "matplotlib>=3.10,<4",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3,<10", "pytest-cov>=6,<8", "ruff>=0.11,<1", "mypy>=1.15,<2", "pandas-stubs>=2.2,<3"]
+
+[project.scripts]
+limited-ope = "limited_ope.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/limited_ope"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN", "D"]
+ignore = ["D203", "D213", "D105", "D107"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "ANN"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["limited_ope"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["gymnasium.*", "matplotlib.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["limited_ope"]
+
+[tool.coverage.report]
+show_missing = true
