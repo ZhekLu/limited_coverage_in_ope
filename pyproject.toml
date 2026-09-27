@@ -26,6 +26,9 @@ limited-ope = "limited_ope.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/limited_ope"]
 
+[tool.hatch.build.targets.sdist]
+include = ["src/limited_ope", "tests", "docs", "configs", "README.md", "LICENSE", "Makefile", "pyproject.toml", "uv.lock", ".python-version", ".github"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
